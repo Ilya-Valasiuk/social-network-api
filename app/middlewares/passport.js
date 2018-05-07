@@ -8,5 +8,5 @@ passport.use(new VKontakteStrategy({
   callbackURL: 'http://localhost:3000/api/auth/vkontakte/callback',
 }, (accessToken, refreshToken, params, profile, done) => {
   const photoLink = profile.photos[0].value;
-  findOrCreate({ id: profile.id, photoLink }, (err, user) => done(err, user));
+  findOrCreate({ id: profile.id, photoLink }, (err, user) => done(err, { user, accessToken, refreshToken }));
 }));

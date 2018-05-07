@@ -3,6 +3,8 @@ const passport = require('passport');
 
 const router = express.Router();
 
+const UI_URL_PREFIX = 'http://localhost:3001';
+
 const AuthRouter = () => {
   router.get(
     '/vkontakte',
@@ -14,10 +16,12 @@ const AuthRouter = () => {
 
   router.get(
     '/vkontakte/callback',
-    passport.authenticate('vkontakte', { successRedirect: '/api', failureRedirect: '/logintest' }),
+    passport.authenticate('vkontakte'),
     (req, res) => {
+      const { user = {} } = req.user || {};
       // Successful authentication, redirect home.
-      res.redirect('/');
+      // res.redirect(`${UI_URL_PREFIX}/main?token=${accessToken}`);
+      res.redirect(`${UI_URL_PREFIX}/main?userId=${user.id}`);
     }); //eslint-disable-line
 
   return router;

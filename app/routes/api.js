@@ -1,17 +1,18 @@
 const express = require('express');
 const AuthRouter = require('./auth');
-// const UserAPI = require('./user');
+const InterestsRouter = require('./interests');
+const UserRouter = require('./user');
 
 const router = express.Router();
 
 const APIRouter = () => {
   router.use('/auth', AuthRouter());
+  router.use('/', InterestsRouter());
+  router.use('/', UserRouter());
 
   router.get('/', (req, res) => {
     res.json({ susses: true, message: 'You are rock!' });
   });
-
-  // router.use('/user', UserAPI());
 
   return router;
 };
