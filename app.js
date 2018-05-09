@@ -1,11 +1,13 @@
 const path = require('path');
 require('app-module-path').addPath(path.join(__dirname, 'app'));
 
+const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const passport = require('passport');
 const APIRouter = require('./app/routes/api');
+const WebSocket = require('ws');
 
 const { connectToDatabase } = require('./app/config/database');
 
@@ -36,4 +38,27 @@ connectToDatabase();
 
 app.use('/api', APIRouter());
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+const server = http.createServer(app);
+
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    wss.clients.forEach(client => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+
+  ws.on('close', function close() {
+    console.log(arguments);
+    console.log('disconnected!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+  });
+});
+
+server.listen(process.env.PORT || 3000, () => {
+  console.log(`Server started on port ${server.address().port} :)`);
+});
+
+// app.listen(3000, () => console.log('Example app listening on port 3000!'));
