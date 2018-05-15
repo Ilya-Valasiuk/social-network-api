@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 const DATABASE = {
-  // local: 'mongodb://localhost:27017/social-network',
-  local: 'mongodb://admin:admin@ds219040.mlab.com:19040/social-network',
+  local: 'mongodb://localhost:27017/social-network',
   production: 'mongodb://admin:admin@ds219040.mlab.com:19040/social-network',
 };
 
