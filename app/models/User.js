@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const UserSchema = mongoose.Schema({
   id: String,
   name: String,
+  displayName: String,
   photoLink: String,
   position: {
     lat: Number,
@@ -12,7 +13,8 @@ const UserSchema = mongoose.Schema({
   notifications: [{
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     place: String,
-    time: Date,
+    time: String,
+    date: String,
   }],
   interests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Interests' }],
 });

@@ -1,7 +1,13 @@
 const UserModel = require('./User');
 
 const createUser = userData => new Promise((resolve, reject) => {
-  const User = new UserModel(userData);
+  const info = {
+    id: userData.id,
+    photoLink: userData.photos && userData.photos[0] && userData.photos[0].value,
+    displayName: userData.displayName,
+
+  };
+  const User = new UserModel(info);
 
   User.save((err, user) => {
     if (err) {
@@ -17,7 +23,7 @@ const createUser = userData => new Promise((resolve, reject) => {
 const findUser = userData => new Promise((resolve, reject) => {
   UserModel
     .findOne({ id: userData.id })
-    .populate('interests')
+    .populate(['interests', 'notifications.user'])
     .exec((err, user) => {
       if (err) {
         reject(err);
@@ -88,16 +94,24 @@ const updateUserWithPosition = ({ userId, position }) => new Promise((resolve, r
 const updateUserWithNotification = ({ userId, notification }) => new Promise((resolve, reject) => {
   UserModel.findOne({ id: userId }, (err, user) => {
     if (err) {
-      console.log('User was not found', err);
       reject(err);
     } else if (!user) {
       reject(new Error('User not exist'));
     } else {
-      user.notifications.push({ user: notification.fromObjectUserId, place: notification.place, time: notification.time });
+      const newNotification = {
+        user: notification.fromObjectUserId,
+        place: notification.place,
+        date: notification.date,
+        time: notification.time,
+      };
+      user.notifications.push(newNotification);
 
       user.save((err, updatedUser) => {
         if (err) {
           reject(err);
+        }
+        if (!updatedUser) {
+          reject(new Error('User not found'));
         }
         updatedUser.populate('interests', (err, user) => {
           if (err) {
