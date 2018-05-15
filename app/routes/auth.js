@@ -3,7 +3,7 @@ const passport = require('passport');
 
 const router = express.Router();
 
-const UI_URL_PREFIX = 'http://localhost:3001';
+const UI_URL_PREFIX = process.env.NODE_ENV === 'production' ? 'https://social-network-ui.herokuapp.com' : 'http://localhost:3001';
 
 const AuthRouter = () => {
   router.get(
